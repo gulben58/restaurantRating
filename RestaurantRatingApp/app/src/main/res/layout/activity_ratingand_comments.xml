@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/rl"
+    style="@style/AppTheme.Dark"
+    android:background="@mipmap/bb5"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/lil"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="30dp"
+      >
+
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        android:id="@+id/r_img"
+        android:layout_weight="1"
+        />
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_weight="2"
+        android:id="@+id/lil2"
+        >
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/info"
+        android:textSize="20dp"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:layout_weight="1"/>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_weight="2"
+        >
+        <RatingBar
+            android:id="@+id/rating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:numStars="5"
+            android:stepSize="0.01"
+            android:theme="@style/RatingBar"
+
+
+
+            />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rate"
+            android:textColor="@color/white"
+            android:background="#ece200"
+            android:id="@+id/rate"
+
+            />
+
+    </LinearLayout>
+    </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@id/lil"
+        android:id="@+id/lil4"
+        android:layout_centerHorizontal="true">
+        <ImageButton
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:text="View on map"
+            android:id="@+id/viewMap"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/map3"
+            />
+
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/comSection"
+        android:text="Comments"
+        android:textSize="30dp"
+        android:textColor="@color/white"
+        android:layout_below="@+id/lil4"
+        android:textStyle="bold"
+      />
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/comments"
+        android:layout_below="@id/comSection"
+        android:textSize="30dp"
+        android:layout_above="@+id/lil3"
+
+
+
+
+        />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/lil3"
+
+        >
+    <EditText
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_weight="3"
+        android:id="@+id/comment"
+        android:background="@drawable/edittext"
+        android:hint="Enter your comment here."
+        android:textColor="@color/white"
+
+        />
+    <Button
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:id="@+id/send"
+        android:text="SEND"
+        android:background="#ece200"
+        android:textColor="@color/white"
+        />
+    </LinearLayout>
+
+</RelativeLayout>
