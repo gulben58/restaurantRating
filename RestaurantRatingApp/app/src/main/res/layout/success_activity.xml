@@ -1,20 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/bb5">
+    android:background="@mipmap/bb5"
+    android:orientation="vertical">
 
-
+   <android.support.v4.widget.SwipeRefreshLayout
+       android:layout_width="match_parent"
+       android:layout_height="0dp"
+       android:layout_weight="11"
+       android:id="@+id/swipe_refresh_layout">
    <ListView
        android:layout_width="match_parent"
-       android:layout_height="match_parent"
+       android:layout_height="wrap_content"
        android:id="@+id/lv"
 
-
-      >
+       >
 
    </ListView>
+   </android.support.v4.widget.SwipeRefreshLayout>
+   <Button
+       android:layout_width="wrap_content"
+       android:layout_height="0dp"
+       android:id="@+id/logout3"
+       android:text="LOGOUT"
+       android:layout_weight="1"
+       android:layout_gravity="right"
+       android:background="#b22f2f"
+       android:textColor="@color/white"
+       />
 
 
 
-</RelativeLayout>
+</LinearLayout>

@@ -17,6 +17,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Dark">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,17 +27,26 @@
         </activity>
         <activity
             android:name=".SignupActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Dark" />
         <activity
             android:name=".Success_Activity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Dark" />
         <activity
             android:name=".HomePage"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Dark" />
         <activity
             android:name=".RatingandComments"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Dark" />
-        <activity android:name=".MainPage"
+        <activity
+            android:name=".MainPage"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Dark"></activity>
+        <activity android:name=".ProfileActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Dark"></activity>
     </application>
 

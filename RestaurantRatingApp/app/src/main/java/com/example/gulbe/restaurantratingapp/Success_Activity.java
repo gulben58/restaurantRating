@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -14,6 +15,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -52,9 +54,9 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 
-public class Success_Activity extends Activity {
+public class Success_Activity extends Activity implements SwipeRefreshLayout.OnRefreshListener{
     private LocationTracker tracker;
-    ArrayList<Double> listOfDistances;
+    ArrayList<Float> listOfDistances;
     ArrayList<Integer> listOfRestaurantIds;
     ArrayList<String> listOfNames;
     ArrayList<String> listOfImages;
@@ -70,6 +72,10 @@ public class Success_Activity extends Activity {
     Double longitude2;
     int userid;
     String email;
+    SharedPreferences sp;
+    Button logout;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    float dist;
 
 
 
@@ -90,6 +96,20 @@ public class Success_Activity extends Activity {
         Bundle extras=getIntent().getExtras();
         userid=extras.getInt("user_id");
         email=extras.getString("user_email");
+        sp = getSharedPreferences("login",MODE_PRIVATE);
+        logout=(Button) findViewById(R.id.logout3);
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(Success_Activity.this,MainActivity.class);
+                sp.edit().putBoolean("logged",false).apply();
+                startActivity(intent);
+
+            }
+        });
+
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
+        swipeRefreshLayout.setOnRefreshListener((SwipeRefreshLayout.OnRefreshListener) this);
 
 
 
@@ -110,6 +130,20 @@ public class Success_Activity extends Activity {
 
 
     }
+
+    @Override
+    public void onRefresh() {
+        arrayAdapter.clear();
+        new setRating().execute();
+        new RestaurantListView().execute();
+        if (swipeRefreshLayout.isRefreshing()) {
+            swipeRefreshLayout.setRefreshing(false);
+        }
+
+
+    }
+
+
     private class setRating extends AsyncTask<Void, Void, String> {
 
 
@@ -253,14 +287,16 @@ public class Success_Activity extends Activity {
                 dist = Math.acos(dist);
                 dist = rad2deg(dist);
                 dist = dist * 60 * 1.1515;*/
-                double earthRadius = 6371; //meters
-                double dLat = Math.toRadians(latitude2 - latitude1);
-                double dLng = Math.toRadians(longitude2 - longitude1);
-                double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                        Math.cos(Math.toRadians(latitude1)) * Math.cos(Math.toRadians(latitude2)) *
-                                Math.sin(dLng / 2) * Math.sin(dLng / 2);
-                double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-                double dist = (double) (earthRadius * c);
+                Location loc1 = new Location("");
+                loc1.setLatitude(latitude1);
+                loc1.setLongitude(longitude1);
+
+                Location loc2 = new Location("");
+                loc2.setLatitude(latitude2);
+                loc2.setLongitude(longitude2);
+
+                dist = loc1.distanceTo(loc2)/1000;
+
 
                 if (dist <= 5.0) {
 

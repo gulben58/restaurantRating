@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.gulbe.restaurantratingapp.ProfileActivity"
+    style="@style/AppTheme.Dark"
+    android:background="@color/black">
+
+
+    <ImageView
+           android:layout_width="match_parent"
+           android:layout_height="100dp"
+           android:background="@drawable/img"
+           android:id="@+id/pic"
+           />
+
+    <ImageButton
+           android:layout_width="100dp"
+           android:layout_height="100dp"
+           android:id="@+id/profil"
+           android:layout_marginTop="30dp"
+           android:background="@drawable/prfl3"
+           android:layout_centerHorizontal="true"
+           />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/username"
+        android:layout_below="@id/profil"
+        android:layout_centerHorizontal="true"
+        android:textSize="30dp"
+        android:textColor="@color/white"
+        android:gravity="center"
+        android:layout_marginBottom="40dp"
+
+
+        />
+
+   <TextView
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:id="@+id/previousComments"
+       android:layout_below="@+id/username"
+       android:text="Previous Comments On Restaurants"
+       android:textColor="@color/black"
+       android:layout_marginBottom="20dp"
+       android:textSize="20dp"
+       android:background="#ffd1dc"
+       />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/previousComments"
+        android:orientation="vertical">
+    <ListView
+           android:layout_width="match_parent"
+           android:layout_height="0dp"
+           android:layout_below="@+id/previousComments"
+           android:id="@+id/commentList"
+           android:layout_weight="6">
+
+       </ListView>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:text="LOGOUT"
+        android:id="@+id/logout4"
+        android:layout_gravity="right"
+        android:background="#b22f2f"
+        android:textColor="@color/white"
+        android:layout_weight="1"/>
+
+    </LinearLayout>
+
+
+
+
+</RelativeLayout>

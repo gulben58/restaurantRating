@@ -2,6 +2,7 @@ package com.example.gulbe.restaurantratingapp;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.AsyncTask;
@@ -53,8 +54,11 @@ public class HomePage extends AppCompatActivity {
     ListView listView;
     int userid;
     String email;
-    ArrayList<Double> listOfDistances;
-    Double dist;
+    ArrayList<Float> listOfDistances;
+    Float dist;
+    Button logout;
+    SharedPreferences sp;
+    int count;
 
 
     @Override
@@ -68,7 +72,8 @@ public class HomePage extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+         count = 0;
+        sp = getSharedPreferences("login",MODE_PRIVATE);
         Bundle extras = getIntent().getExtras();
         userid = extras.getInt("user_id");
         email = extras.getString("user_email");
@@ -82,6 +87,17 @@ public class HomePage extends AppCompatActivity {
         rating=new ArrayList<>();
         listOfLatitudes=new ArrayList<>();
         listOfLongitudes=new ArrayList<>();
+        logout=(Button) findViewById(R.id.logout) ;
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(HomePage.this,MainActivity.class);
+                sp.edit().putBoolean("logged",false).apply();
+                startActivity(intent);
+
+
+            }
+        });
         searchText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -120,6 +136,8 @@ public class HomePage extends AppCompatActivity {
                     }
                 }
         );
+        new setRating().execute();
+        new loadRestaurant().execute();
 
 
     }
@@ -172,7 +190,7 @@ public class HomePage extends AppCompatActivity {
 
 
         JSONArray jsonArray = new JSONArray(json);
-        int count = 0;
+
 
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject obj = jsonArray.getJSONObject(i);
@@ -245,31 +263,42 @@ public class HomePage extends AppCompatActivity {
 
     private void loadIntoView(String json) throws JSONException {
 
-        Double distance=0.0;
-        JSONArray jsonArray = new JSONArray(json);
-        int count = 0;
 
+        JSONArray jsonArray = new JSONArray(json);
+
+        listOfDistances.clear();
         for (int i = 1; i < jsonArray.length(); i++) {
             JSONObject obj = jsonArray.getJSONObject(i);
 
             if (obj.getString("name").toLowerCase().contains(searchText.getText().toString().toLowerCase())) {
                 //restaurant.setText(obj.getString("name"));
                 //Picasso.with(getApplicationContext()).load(obj.getString("image")).into(pic);
+                count++;
                 latitude1 = obj.getDouble("latitude");
                 longitude1 = obj.getDouble("longitude");
                 tracker = new LocationTracker(HomePage.this);
                 if (tracker.canGetLocation()) {
                     latitude2 = tracker.getLatitude();
                     longitude2 = tracker.getLongitude();
-                    Double theta = longitude1 - longitude2;
-                    dist = Math.sin(deg2rad(latitude1))
-                            * Math.sin(deg2rad(latitude2))
-                            + Math.cos(deg2rad(latitude1))
-                            * Math.cos(deg2rad(latitude2))
-                            * Math.cos(deg2rad(theta));
-                    dist = Math.acos(dist);
-                    dist = rad2deg(dist);
-                    dist = dist * 60 * 1.1515;
+                   /* double earthRadius = 6371; //meters
+                    double dLat = Math.toRadians(latitude2 - latitude1);
+                    double dLng = Math.toRadians(longitude2 - longitude1);
+                    double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                            Math.cos(Math.toRadians(latitude1)) * Math.cos(Math.toRadians(latitude2)) *
+                                    Math.sin(dLng / 2) * Math.sin(dLng / 2);
+                    double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                    dist = (double) (earthRadius * c);*/
+                    Location loc1 = new Location("");
+                    loc1.setLatitude(latitude1);
+                    loc1.setLongitude(longitude1);
+
+                    Location loc2 = new Location("");
+                    loc2.setLatitude(latitude2);
+                    loc2.setLongitude(longitude2);
+
+                     dist = loc1.distanceTo(loc2);
+                     dist=dist/1000;
+
 
 
 
@@ -278,24 +307,24 @@ public class HomePage extends AppCompatActivity {
                     tracker.showSettingsAlert();
                 }
 
+                listOfImages.add(obj.getString("image"));
+                listOfNames.add(obj.getString("name"));
+                listOfRestaurantIds.add(obj.getInt("id"));
+                listOfDistances.add(dist);
+                listOfLatitudes.add(latitude1);
+                listOfLongitudes.add(longitude1);
 
-            listOfImages.add(obj.getString("image"));
-            listOfNames.add(obj.getString("name"));
-            listOfRestaurantIds.add(obj.getInt("id"));
-            listOfDistances.add(dist);
-            listOfLatitudes.add(latitude1);
-            listOfLongitudes.add(longitude1);
 
-                count++;
 
+
+                if(count==0){
+                    Toast.makeText(HomePage.this,"No Record Found",Toast.LENGTH_LONG).show();
+                }
 
         }
-     if(count==0){
-                Toast.makeText(HomePage.this,"No Record Found",Toast.LENGTH_LONG).show();
-     }
+
 
     }
-
 
 
 
@@ -329,5 +358,134 @@ public class HomePage extends AppCompatActivity {
     private double rad2deg(double rad) {
         return (rad * 180.0 / Math.PI);
     }
+
+    private class loadRestaurant extends AsyncTask<Void, Void, String> {
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+
+
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+
+
+            try {
+                URL url = new URL("http://192.168.128.86/restaurantHTMLtoJSON.php");
+                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                StringBuilder sb = new StringBuilder();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                String json;
+                while ((json = bufferedReader.readLine()) != null) {
+                    sb.append(json + "\n");
+                }
+                return sb.toString().trim();
+            } catch (Exception e) {
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+            try {
+                loadRestaurantList(s);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
+        }
+    }
+
+    private void loadRestaurantList(String json) throws JSONException {
+
+
+        JSONArray jsonArray = new JSONArray(json);
+
+
+        for (int i = 1; i < jsonArray.length(); i++) {
+            JSONObject obj = jsonArray.getJSONObject(i);
+
+
+                latitude1 = obj.getDouble("latitude");
+                longitude1 = obj.getDouble("longitude");
+                tracker = new LocationTracker(HomePage.this);
+                if (tracker.canGetLocation()) {
+                    latitude2 = tracker.getLatitude();
+                    longitude2 = tracker.getLongitude();
+                  /*  double earthRadius = 6371; //meters
+                    double dLat = Math.toRadians(latitude2 - latitude1);
+                    double dLng = Math.toRadians(longitude2 - longitude1);
+                    double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                            Math.cos(Math.toRadians(latitude1)) * Math.cos(Math.toRadians(latitude2)) *
+                                    Math.sin(dLng / 2) * Math.sin(dLng / 2);
+                    double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                     dist = (double) (earthRadius * c);*/
+                    Location loc1 = new Location("");
+                    loc1.setLatitude(latitude1);
+                    loc1.setLongitude(longitude1);
+
+                    Location loc2 = new Location("");
+                    loc2.setLatitude(latitude2);
+                    loc2.setLongitude(longitude2);
+
+                    dist = loc1.distanceTo(loc2)/1000;
+
+
+
+
+
+                } else {
+                    tracker.showSettingsAlert();
+                }
+
+
+                listOfImages.add(obj.getString("image"));
+                listOfNames.add(obj.getString("name"));
+                listOfRestaurantIds.add(obj.getInt("id"));
+                listOfDistances.add(dist);
+                listOfLatitudes.add(latitude1);
+                listOfLongitudes.add(longitude1);
+
+
+
+
+
+
+        }
+
+
+
+
+
+        arrayAdapter=new CustomAdapter(HomePage.this,listOfNames,listOfImages,listOfDistances,rating,r_name);
+        listView.setAdapter(arrayAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent intent=new Intent(HomePage.this,RatingandComments.class);
+                intent.putExtra("restaurant_id",listOfRestaurantIds.get(i));
+                intent.putExtra("user_id",userid);
+                intent.putExtra("images",listOfImages.get(i));
+                intent.putExtra("restaurant_name",listOfNames.get(i));
+                intent.putExtra("user_email",email);
+                intent.putExtra("latitude",listOfLatitudes.get(i));
+                intent.putExtra("longitude",listOfLongitudes.get(i));
+                startActivity(intent);
+            }
+        });
+
+        arrayAdapter.notifyDataSetChanged();
+
+
+
+    }
+
 
 }

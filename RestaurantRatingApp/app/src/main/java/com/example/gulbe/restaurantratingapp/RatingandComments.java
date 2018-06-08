@@ -69,6 +69,7 @@ public class RatingandComments extends AppCompatActivity {
         listOfEmails=new ArrayList<>();
         rateBtn=(Button) findViewById(R.id.rate);
         viewOnMap=(ImageButton) findViewById(R.id.viewMap);
+        new GetComments().execute();
 
 
 
@@ -95,7 +96,7 @@ public class RatingandComments extends AppCompatActivity {
      });
         Picasso.with(getApplicationContext()).load(url).into(img);
 
-        new GetComments().execute();
+
 
       rateBtn.setOnClickListener(new View.OnClickListener() {
           @Override
@@ -125,7 +126,8 @@ public class RatingandComments extends AppCompatActivity {
 
                   Log.i("STATUS", String.valueOf(conn.getResponseCode()));
                   Log.i("MSG", conn.getResponseMessage());
-                  Toast.makeText(RatingandComments.this, "Successful" + jsonParam.toString(), Toast.LENGTH_LONG).show();
+                 // Toast.makeText(RatingandComments.this, "Successful" + jsonParam.toString(), Toast.LENGTH_LONG).show();
+                  Toast.makeText(RatingandComments.this, "Successful", Toast.LENGTH_LONG).show();
                   conn.disconnect();
 
 
@@ -168,12 +170,13 @@ public class RatingandComments extends AppCompatActivity {
 
                     Log.i("STATUS", String.valueOf(conn.getResponseCode()));
                     Log.i("MSG", conn.getResponseMessage());
-                    Toast.makeText(RatingandComments.this, "Successful" + jsonParam.toString(), Toast.LENGTH_LONG).show();
+                  //  Toast.makeText(RatingandComments.this, "Successful" + jsonParam.toString(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(RatingandComments.this, "Successful" , Toast.LENGTH_LONG).show();
                     conn.disconnect();
-                    listOfComments.add(com);
-                    listOfEmails.add(email);
-                    adapter=new RatingCustomAdapter(RatingandComments.this,listOfComments,listOfEmails);
-                    commentText.setAdapter(adapter);
+                    adapter.clear();
+                    new GetComments().execute();
+                    comment.setText("");
+
 
 
                 } catch (Exception e) {
@@ -228,7 +231,7 @@ public class RatingandComments extends AppCompatActivity {
 
         JSONArray jsonArray = new JSONArray(json);
         String a = "";
-        for (int i = 1; i < jsonArray.length(); i++) {
+        for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject obj = jsonArray.getJSONObject(i);
             if (restaurant_id == obj.getInt("r_id")) {
                 listOfComments.add(obj.getString("comments"));

@@ -79,7 +79,8 @@ public class SignupActivity extends AppCompatActivity {
 
             Log.i("STATUS", String.valueOf(conn.getResponseCode()));
             Log.i("MSG" , conn.getResponseMessage());
-            Toast.makeText(SignupActivity.this, "Successful"+jsonParam.toString(), Toast.LENGTH_LONG).show();
+           // Toast.makeText(SignupActivity.this, "Successful"+jsonParam.toString(), Toast.LENGTH_LONG).show();
+            Toast.makeText(SignupActivity.this, "Successful", Toast.LENGTH_LONG).show();
 
             conn.disconnect();
             Intent intent=new Intent(SignupActivity.this,MainActivity.class);

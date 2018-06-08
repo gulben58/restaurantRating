@@ -177,8 +177,8 @@ public class LocationTracker extends  Service implements LocationListener {
          * */
 
         public void showSettingsAlert(){
-            AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
-
+            final AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
+            alertDialog.setCancelable(true);
             // Setting Dialog Title
             alertDialog.setTitle("GPS settings");
 
@@ -198,11 +198,15 @@ public class LocationTracker extends  Service implements LocationListener {
 
                 public void onClick(DialogInterface dialog, int which) {
 
-                        dialog.cancel();
+                           dialog.cancel();}
 
-                }
+
             });
             alertDialog.show();
+
+
+
+
         }
 
 

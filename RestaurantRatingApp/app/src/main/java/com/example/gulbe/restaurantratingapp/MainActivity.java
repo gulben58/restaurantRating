@@ -2,6 +2,7 @@ package com.example.gulbe.restaurantratingapp;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -30,6 +31,7 @@ import butterknife.InjectView;
 public class MainActivity extends AppCompatActivity {
     private String valid_email;
     private EditText etEmail;
+    SharedPreferences sp;
     @InjectView(R.id.password) EditText etPswd;
     @InjectView(R.id.link_signup) TextView _signupLink;
 
@@ -38,6 +40,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+        sp = getSharedPreferences("login",MODE_PRIVATE);
+
+        if(sp.getBoolean("logged",false)){
+            int userid=sp.getInt("user_id",0);
+            String mail=sp.getString("user_email","");
+            Intent intent=new Intent(MainActivity.this,MainPage.class);
+            intent.putExtra("user_id",userid);
+            intent.putExtra("user_email",mail);
+            startActivity(intent);
+
+        }
 
         ButterKnife.inject(this);
         etEmail = (EditText) findViewById(R.id.email);
@@ -194,7 +207,12 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent=new Intent(MainActivity.this,MainPage.class);
                     intent.putExtra("user_id",userid);
                     intent.putExtra("user_email",mail);
+                    sp.edit().putBoolean("logged",true).apply();
+                    sp.edit().putInt("user_id",userid).apply();
+                    sp.edit().putString("user_email",email).apply();
                     startActivity(intent);
+
+                    finish();
 
                     count++;
 
@@ -213,6 +231,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
+    }
+    @Override
+    public void onBackPressed(){
+        Intent a = new Intent(Intent.ACTION_MAIN);
+        a.addCategory(Intent.CATEGORY_HOME);
+        a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(a);
     }
 }
 

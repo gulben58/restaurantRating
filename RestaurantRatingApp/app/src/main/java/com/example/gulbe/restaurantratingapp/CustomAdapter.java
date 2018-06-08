@@ -50,14 +50,14 @@ public class CustomAdapter extends ArrayAdapter<String> {
     private final Activity context;
     private final ArrayList<String> name;
     private final ArrayList<String> images;
-    private final ArrayList<Double> distances;
+    private final ArrayList<Float> distances;
     private final ArrayList<Float> ratings;
     private final ArrayList<String> r_name;
 
 
 
 
-    public CustomAdapter(Activity context, ArrayList<String> name, ArrayList<String> images,ArrayList<Double> distances,ArrayList<Float> ratings,ArrayList<String> r_name) {
+    public CustomAdapter(Activity context, ArrayList<String> name, ArrayList<String> images,ArrayList<Float> distances,ArrayList<Float> ratings,ArrayList<String> r_name) {
         super(context, R.layout.custom_list, name);
         // TODO Auto-generated constructor stub
 
@@ -88,7 +88,7 @@ public class CustomAdapter extends ArrayAdapter<String> {
 
 
 
-        dist.setText(new DecimalFormat("##.#").format(distances.get(position))+"km");
+        dist.setText(String.format("%.2f", distances.get(position))+"km");
         txtName.setText(name.get(position));
 
 
